@@ -1,47 +1,29 @@
 name: Build and Release Nuggit
-
 on:
   push:
     branches:
       - main
     paths:
-      - 'RELEASE' 
-
-
+      - 'RELEASE'
 permissions:
   contents: write
-
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
       - name: Get version
         id: get_version
         run: |
           VERSION=$(cat RELEASE)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-
-      - name: Install Rust
-        uses: actions/setup-rust@v1
-        with:
-          rust-version: stable
-          toolchain: stable
-
-      - name: Build
-        run: cargo build --release --bin nuggit
-
-      - name: Prepare artifact
-        run: |
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo build --release --bin nuggit
+      - run: |
           cp target/release/nuggit nuggit-${{ steps.get_version.outputs.version }}-linux
           chmod +x nuggit-${{ steps.get_version.outputs.version }}-linux
-
-      - name: Create Release
+      - uses: actions/create-release@v1
         id: create_release
-        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -52,9 +34,7 @@ jobs:
             Built from commit ${{ github.sha }}.
           draft: false
           prerelease: false
-
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
+      - uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
