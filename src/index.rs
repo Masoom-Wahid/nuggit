@@ -7,6 +7,8 @@ use bincode;
 use crate::config::CONFIG;
 use log::debug;
 use std::collections::HashMap;
+use crate::commit::{CommitTree,CommitTreeNode};
+
 
 #[derive(Debug, Serialize, Deserialize,Clone)]
 pub struct Entry {
@@ -64,12 +66,24 @@ impl Index {
         Ok(())
     }
 
-    pub fn to_tree(&self) -> Result<String> {
-        let mut tree = String::new();
-        for (path, entry) in self.entries.iter() {
-            tree.push_str(&format!("{} {} {} {} {}\n", entry.hash, path, entry.mode, entry.flags, entry.path.display()));
+    pub fn to_tree(&self) -> Result<CommitTree> {
+        let mut nodes = Vec::new();
+        for (path, entry) in &self.entries {
+            let path_buf = PathBuf::from(path);
+            let name = path_buf
+                .file_name()
+                .ok_or_else(|| anyhow::anyhow!("Invalid path: {:?}", path))?
+                .to_string_lossy()
+                .to_string();
+
+            let node = CommitTreeNode{
+                mode: entry.mode.to_string(),
+                name,
+                hash: entry.hash.clone(),
+            };
+            nodes.push(node);
         }
-        Ok(tree)
+        Ok(CommitTree { nodes })
     }
 
     pub fn write(&self) -> Result<()> {

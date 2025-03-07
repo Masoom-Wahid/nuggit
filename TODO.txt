@@ -1,0 +1,1 @@
+- Solve the problem where a file which has not changed will also be staged in each clean commit

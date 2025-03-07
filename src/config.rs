@@ -14,6 +14,7 @@ pub struct NuggitConfig{
     pub heads_path : PathBuf,
     pub remotes_path : PathBuf,
     pub head : Option<String>,
+    #[allow(dead_code)]
     pub current_parent : Option<String>,
 }
 

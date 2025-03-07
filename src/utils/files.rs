@@ -23,6 +23,14 @@ pub fn compress(data : &[u8]) -> Result<Vec<u8>>{
     Ok(compressed)
 }
 
+pub fn decompress(data : &[u8]) -> Result<Vec<u8>>{
+    let mut decompressor = flate2::write::ZlibDecoder::new(Vec::new());
+    decompressor.write_all(data)?;
+    let decompressed = decompressor.finish()?;
+    Ok(decompressed)
+}
+
+
 pub fn save_hash_file(hash : &str) -> Result<String>{
     let hash_dir = hash[0..2].to_string();
     let hash_dir_path = CONFIG.objects_path.join(hash_dir);
