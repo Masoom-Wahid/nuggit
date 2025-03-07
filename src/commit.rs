@@ -96,10 +96,11 @@ impl Commit{
         file_path
     }
     
-    fn print_commit(commit : Option<Commit>){
+    fn print_commit(commit : Option<Commit>,hash : &String){
         if let Some(commit) = commit {
             info!(
-                "\nCommit: {}\nAuthor: {}\nParent: {}\n",
+                "\nCommit: {}\nMessage: {}\nAuthor: {}\nParent: {}\n",
+                hash,
                 commit.message,
                 commit.author,
                 commit.parent.unwrap_or("None".to_string())
@@ -117,7 +118,7 @@ impl Commit{
                 &Self::get_path(&head_ref)
             )?
         );
-        Self::print_commit(current_commit.clone());
+        Self::print_commit(current_commit.clone(),&head_ref);
         debug!("Current commit is {:?}",current_commit);
         while current_commit.is_some() {
             if let Some(commit) = &current_commit {
@@ -125,8 +126,10 @@ impl Commit{
                     let parent_commit = Commit::read(
                         &Self::get_path(parent)
                     )?;
+                    Self::print_commit(
+                        Some(parent_commit.clone()),
+                        parent);
                     current_commit = Some(parent_commit);
-                    Self::print_commit(current_commit.clone());
                 } else {
                     break;
                 }
