@@ -1,11 +1,9 @@
-use crate::commands::NuggitCommand;
+use crate::{commands::NuggitCommand, utils::files::save_hash_file};
 use anyhow::Result;
 use std::path::Path;
 use std::fs::read_dir;
 use crate::utils::files::{hash,compress};
 use log::{debug,info};
-use crate::config::CONFIG;
-use fs_extra::dir::create_all;
 use std::fs::File;
 use std::io::Write;
 use crate::index::Index;
@@ -65,18 +63,8 @@ impl AddCommand{
 
         debug!("Hash of {} is {}", path.display(), hash_str);
 
-        let object_dir = hash_str[0..2].to_string();
-        let object_dir_path = CONFIG.objects_path.join(object_dir);
-        let object_path = object_dir_path.join(hash_str[2..].to_string());
-        if !object_path.exists() {
-            create_all(&object_dir_path,false)?;
-            debug!("file was created at {}",object_path.display());
-        }
-
-        let object_path = object_dir_path.join(hash_str[2..].to_string());
+        let object_path = save_hash_file(&hash_str)?;
         let mut file = File::create(object_path)?;
-
-        // debug!("file was created at {:?}",object_path.display());
 
         let object_content = self.object_content(
             path.file_name().unwrap().to_str().unwrap(),

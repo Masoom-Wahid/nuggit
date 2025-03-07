@@ -64,6 +64,14 @@ impl Index {
         Ok(())
     }
 
+    pub fn to_tree(&self) -> Result<String> {
+        let mut tree = String::new();
+        for (path, entry) in self.entries.iter() {
+            tree.push_str(&format!("{} {} {} {} {}\n", entry.hash, path, entry.mode, entry.flags, entry.path.display()));
+        }
+        Ok(tree)
+    }
+
     pub fn write(&self) -> Result<()> {
         let file = OpenOptions::new()
             .write(true)
@@ -81,7 +89,7 @@ impl Index {
 
     pub fn list_entries(&self) -> Result<()> {
         for entry in self.entries.values(){
-            println!("{}", entry.path.display());
+            println!("{} - {}", entry.path.display(), entry.hash);
         }
         Ok(())
     }
@@ -94,5 +102,11 @@ impl Index {
         };
         index.fill_entries()?;
         Ok(index)
+    }
+
+    pub fn reset(&mut self) -> Result<()> {
+        self.entries = HashMap::new();
+        self.write()?;
+        Ok(())
     }
 }

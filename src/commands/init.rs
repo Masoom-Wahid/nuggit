@@ -14,6 +14,11 @@ pub struct InitCommand{
     pub path: Option<String>,
 }
 
+impl InitCommand{
+    pub fn new(path: Option<String>) -> Self{
+        InitCommand{path}
+    }
+}
 impl NuggitCommand for InitCommand {
     fn execute(&mut self) -> Result<()> {
         let should_delete = true;
@@ -33,11 +38,12 @@ impl NuggitCommand for InitCommand {
         create_all(git_path, false)?;
         debug!("Created git directory {}", GIT_DIR);
         
-        write_all(
-            Path::new(&CONFIG.index_path),
-            ""
-        )?;
-        debug!("Created {} index file", CONFIG.index_path.display());
+        /*
+        For some reason if the index file is created here,
+        i get end of file when running add command
+         */
+        // File::create(Path::new(&CONFIG.index_path))?;
+        // debug!("Created {} index file", CONFIG.index_path.display());
         
         write_all(
             Path::new(&CONFIG.heads_path),

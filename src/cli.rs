@@ -17,13 +17,13 @@ pub struct AddArgs {
 
 #[derive(Parser)]
 pub struct CommitArgs {
-    #[arg(help="The commit message")]
+    #[arg(short, long, help="The commit message")]
     pub message: String,
 }
 
 
 #[derive(Parser)]
-pub struct ListArgs {
+pub struct StatusArgs {
     #[arg(help="The path to the index file")]
     pub path: Option<String>,
 }
@@ -36,8 +36,10 @@ pub enum Command {
     Add(AddArgs),
     #[command(name="commit", about="Commit the project")]
     Commit(CommitArgs),
-    #[command(name="list", about="List indexes")]
-    List(ListArgs),
+    #[command(name="status", about="List indexes")]
+    Status(StatusArgs),
+    #[command(name="log", about="List all commits")]
+    Log,
 }
 
 

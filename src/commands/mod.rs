@@ -4,7 +4,7 @@ pub mod commit;
 
 pub use init::InitCommand;
 pub use add::AddCommand;
-// pub use commit::CommitCommand;
+pub use commit::CommitCommand;
 
 use anyhow::Result;
 
