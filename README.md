@@ -9,7 +9,7 @@ Why use git when u have a worser version of it???
 
 ## Installation
 ### From Releases
-1. Visit the [Releases page](https://github.com/your-username/nuggit/releases) on GitHub.
+1. Visit the [Releases page](https://github.com/Masoom-Wahid/nuggit/releases) on GitHub.
 2. Download the latest binary (e.g., `nuggit-v0.1.0-linux`) for your platform.
 3. Make it executable: `chmod +x nuggit-v0.1.0-linux`.
 4. Move it to your PATH: `mv nuggit-v0.1.0-linux /usr/local/bin/nuggit`.
