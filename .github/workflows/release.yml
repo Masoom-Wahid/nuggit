@@ -1,0 +1,58 @@
+name: Build and Release Nuggit
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: actions/setup-rust@v1
+        with:
+          rust-version: stable
+          toolchain: stable
+
+
+      - name: Build
+        run: cargo build --release --bin nuggit
+
+
+      - name: Prepare artifact
+        run: |
+          cp target/release/nuggit nuggit-${{ github.ref_name }}-linux
+          chmod +x nuggit-${{ github.ref_name }}-linux
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Nuggit ${{ github.ref_name }}
+          body: |
+            Automated release of Nuggit ${{ github.ref_name }}.
+            Built from commit ${{ github.sha }}.
+          draft: false
+          prerelease: false
+
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./nuggit-${{ github.ref_name }}-linux
+          asset_name: nuggit-${{ github.ref_name }}-linux
+          asset_content_type: application/octet-stream
