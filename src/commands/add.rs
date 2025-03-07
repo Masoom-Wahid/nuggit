@@ -9,17 +9,29 @@ use std::io::Write;
 use crate::index::Index;
 use serde::{Serialize,Deserialize};
 use bincode;
+use std::path::PathBuf;
+use crate::utils::files::decompress;
+
 pub struct AddCommand{
     pub path : String,
     index : Index
 }
 
 #[derive(Serialize,Deserialize)]
-struct ObjectContent{
-    file_name : String,
-    hash_str : String,
-    content : Vec<u8>
+pub struct ObjectContent{
+    pub file_name : String,
+    pub hash_str : String,
+    pub content : Vec<u8>
 }
+
+impl ObjectContent{
+    pub fn read(path : &PathBuf) -> Result<Self>{
+        let content = decompress(&std::fs::read(path)?)?;
+        let object_content = bincode::deserialize(&content)?;
+        Ok(object_content)
+    }
+}
+
 
 impl AddCommand{
     pub fn new(path : String) -> Result<Self>{
@@ -73,6 +85,7 @@ impl AddCommand{
         )?;         
         debug!("created content");
 
+        // self.write_object_content(&object_content, &mut file)?;
         file.write_all(
             compress(&object_content)?.as_slice()
         )?;

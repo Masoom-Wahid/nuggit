@@ -20,6 +20,7 @@ fn main() -> Result<()> {
         Command::Commit(args) => commands::CommitCommand::new(args.message)?.execute()?,
         Command::Status(_) => commands::StatusCommand::new().execute()?,
         Command::Log => commands::LogCommand::new().execute()?,
+        Command::Diff(_) => commands::DiffCommand::new().execute()?,
         #[allow(unreachable_patterns)]
         _ => panic!("not implemented yet"),
     }

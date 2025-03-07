@@ -56,7 +56,7 @@ impl CommitTreeNode{
 
 #[derive(Serialize,Deserialize,Clone,Debug)]
 pub struct Commit{
-    tree : String,
+    pub tree : String,
     parent : Option<String>,
     author : String,
     message : String,

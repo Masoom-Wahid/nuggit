@@ -28,6 +28,16 @@ pub struct StatusArgs {
     pub path: Option<String>,
 }
 
+
+#[derive(Parser)]
+pub struct DiffArgs {
+    #[arg(help="The first hash")]
+    pub first_hash: Option<String>,
+    #[arg(help="The second hash")]
+    pub second_hash: Option<String>,
+}
+
+
 #[derive(Subcommand)]
 pub enum Command {
     #[command(name="init", about="Initialize a new project")]
@@ -40,6 +50,8 @@ pub enum Command {
     Status(StatusArgs),
     #[command(name="log", about="List all commits")]
     Log,
+    #[command(name="diff", about="List all changes")]
+    Diff(DiffArgs),
 }
 
 
