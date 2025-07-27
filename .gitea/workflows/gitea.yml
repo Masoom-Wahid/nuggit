@@ -1,0 +1,14 @@
+name: Build Nuggit
+on:
+  push:
+    branches:
+      - gitea
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Build
+        run: cargo build --release --bin nuggit
