@@ -1,3 +1,4 @@
 - Move Object content struct into storage and associate write function to use generic where the impl serializer,deserializer
 - Solve the problem where a file which has not changed will also be staged in each clean commit
 - Make it fully compatible with .git , so that is shows in vscode
+- Test
